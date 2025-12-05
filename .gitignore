@@ -90,3 +90,4 @@ target/
 
 swiggypred
 artifacts
+/run_information.json
