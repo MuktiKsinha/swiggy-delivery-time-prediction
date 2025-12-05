@@ -8,6 +8,7 @@ import json
 import joblib
 from mlflow import MlflowClient
 from sklearn import set_config
+from scripts.data_clean_utils import perform_data_cleaning
 
 # set the output as pandas
 set_config(transform_output='pandas')
@@ -23,21 +24,25 @@ mlflow.set_tracking_uri('https://dagshub.com/MuktiKsinha/swiggy-delivery-time-pr
 
 
 class Data(BaseModel):
-    age : float
-    ratings : float
-    weather: str
-    traffic: str
-    vehicle_condition: int
-    type_of_order: str
-    type_of_vehicle: str
-    multiple_deliveries: float
-    festival: str
-    city_type: str
-    is_weekend: int
-    pickup_time_minutes: float
-    order_time_of_day: str
-    distance: float
-    distance_type: str
+    ID: str
+    Delivery_person_ID: str
+    Delivery_person_Age: str
+    Delivery_person_Ratings: str
+    Restaurant_latitude: float
+    Restaurant_longitude: float
+    Delivery_location_latitude: float
+    Delivery_location_longitude: float
+    Order_Date: str
+    Time_Orderd: str
+    Time_Order_picked: str
+    Weatherconditions: str
+    Road_traffic_density: str
+    Vehicle_condition: int
+    Type_of_order: str
+    Type_of_vehicle: str
+    multiple_deliveries: str
+    Festival: str
+    City: str
 
 # load the dat from run_information
 def load_model_information(file_path):
@@ -46,10 +51,9 @@ def load_model_information(file_path):
 
     return run_info
 
-#load the model
-def load_model(model_path):
-    model = joblib.load(model_path)
-    return model
+def load_transformer(transformer_path):
+    transformer = joblib.load(transformer_path)
+    return transformer
 
 
 # columns to preprocess in data
@@ -90,7 +94,7 @@ model = mlflow.sklearn.load_model(model_path)
 
 #load the preprocessor
 preprocessor_path = "models/preprocessor.joblib"
-preprocessor = load_model(preprocessor_path)
+preprocessor = load_transformer(preprocessor_path)
 
 #build the model pipeline
 model_pipe = Pipeline(
