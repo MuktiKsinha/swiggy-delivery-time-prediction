@@ -7,3 +7,4 @@ dvc
 xgboost
 joblib
 dvc-s3  #plugin 
+pytest
