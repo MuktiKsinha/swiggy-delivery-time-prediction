@@ -1,0 +1,29 @@
+# Ignore heavy and unnecessary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# virtual environments
+env/
+venv/
+
+# DVC cache
+.cache/
+.dvc/cache/
+.dvc/tmp/
+
+# large model files
+models/*.joblib
+!models/preprocessor.joblib
+
+# MLflow runs
+mlruns/
+
+# notebooks
+*.ipynb
+
+# git & logs
+.git/
+.gitignore
+*.log
