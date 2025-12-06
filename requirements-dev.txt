@@ -6,4 +6,4 @@ dagshub
 dvc
 xgboost
 joblib
-dvc-s3
+dvc-s3  #plugin 
