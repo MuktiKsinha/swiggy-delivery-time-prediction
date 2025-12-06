@@ -73,6 +73,27 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      - name: Deploy to EC2
+        if: success()
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
+            aws ecr get-login-password --region ${{ secrets.AWS_DEFAULT_REGION }} \
+              | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+            docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY_URI }}:latest
+            docker stop delivery_time_pred || true
+            docker rm delivery_time_pred || true
+            docker run -d -p 8000:8000 \
+              -e DAGSHUB_PAT=${{ secrets.DAGSHUB_TOKEN }} \
+              --name delivery_time_pred \
+              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY_URI }}:latest
+
 
       
           
